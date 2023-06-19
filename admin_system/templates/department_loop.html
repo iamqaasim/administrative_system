@@ -1,0 +1,8 @@
+{% for department in all_departments %}
+
+  <option 
+    selected="{{ department['department_name'] }}">
+    {{ department['department_name'] }}
+  </option>
+
+{% endfor %}

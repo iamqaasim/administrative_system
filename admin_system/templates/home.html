@@ -1,0 +1,112 @@
+<!-- 
+Variables coming into this template:
+
+Website data
+tab_title - Header of the tab
+
+product data
+headings - Headings of the products (max 4)
+products - List of products to be displayed (max 4)
+-->
+
+<!-- This page is inheriting everything from the base template -->
+{% extends "base.html" %}
+
+<!-- This block tag is overriding the title block tag from the base template -->
+{% block title %} Home {% endblock %}
+
+
+<!-- This block tag is overriding the content block tag from the base template -->
+{% block content%}
+<h1 class="text-center">
+  About this project
+</h1>
+
+<hr>
+
+<h4>
+  <u>What type of admin system is this?:</u>
+</h4>
+
+<p>
+   This is a User Administrative System. It allows administrators to create and manage user accounts, assign roles and permissions, and control access to different features and data within the system.
+</p>
+
+<h4>
+  <u>Details:</u>
+</h4>
+
+<h5>
+  Users
+</h5>
+
+<p>
+  In this scenario there are 3 types of users:
+  <ul>
+    <li>Employee</li>
+    <li>Manager</li>
+    <li>HR Admin (super user)</li>
+  </ul>
+</p>
+
+<h5>
+  Employees
+</h5>
+
+<p>
+  Once a new employee is created, a default username and password is generated for them
+  <ul>
+    <li>Username: username</li>
+    <li>Password: Password123#</li>
+  </ul>
+
+An employee can:
+  <ul>
+    <li>only see and edit their own data</li>
+    <li>work for multiple departments</li>
+  </ul>
+</p>
+
+<h5>
+  Mangers
+</h5>
+
+<p>
+  A manger is also an employee, so they are created the same way
+  <ul>
+    <li>Username: username</li>
+    <li>Password: Password123#</li>
+  </ul>
+
+A manager can:
+  <ul>
+    <li>only see and edit their own data</li>
+    <li>manage multiple employees</li>
+    <li>manage multiple departments</li>
+    <li>only see employees in their department</li>
+  </ul>
+</p>
+
+<h5>
+  HR admins (super users)
+</h5>
+
+<p>
+  A HR admin cannot be created they login with certain credentials to indicate that they are super users
+  <ul>
+    <li>Username: hradmin@test.com</li>
+    <li>Password: TestPass1234</li>
+  </ul>
+
+A HR admin can:
+  <ul>
+    <li>see all employees</li>
+    <li>see all departments</li>
+    <li>change employees data</li>
+    <li>change employees status</li>
+    <li>change department managers</li>
+  </ul>
+</p>
+
+<div style="height: 100px"></div>
+{% endblock %}

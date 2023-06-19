@@ -1,0 +1,117 @@
+<!-- This page is inheriting everything from the base template -->
+{% extends "base.html" %}
+
+<!-- This block tag is overriding the title block tag from the base template -->
+{% block title %} {{section}} list {% endblock %}
+
+
+<!-- This block tag is overriding the content block tag from the base template -->
+{% block content%}
+
+<h1> {{section}} list </h1>
+
+<div class="p-5 bg-body-secondary rounded-3">
+  <caption>Filter</caption>
+  <br>
+  <div class="container-fluid">
+    
+    <form method="POST">
+      
+      <div class="input-group mb-3">
+        <span class="input-group-text" id="inputGroup-sizing-default">Staus</span>
+        <select name="status" class="form-select" type="text">
+          <option selected="">- Select status -</option>
+          <option value="active">Active</option>
+          <option value="inactive">Inactive</option>
+        </select>
+      </div>
+      
+
+      {% if section == "Employee" %}
+
+      <div class="input-group mb-3">
+        <span class="input-group-text" id="inputGroup-sizing-default">Department</span>
+        <select name="department" class="form-select" type="text">
+          {% include 'department_loop.html' %}
+          <option selected="">- Select department -</option>
+        </select>
+      </div>
+      
+      {% if user == "super_user" %}
+        <div class="input-group mb-3">
+          <span class="input-group-text" id="inputGroup-sizing-default">Manager</span>
+          <select name="manager" class="form-select" type="text">
+            {% include 'manager_loop.html' %}
+            <option selected="">- Select manager -</option>
+          </select>
+        </div>
+      {% endif %}
+      
+      {% endif %}
+      
+      <button type="filter" class="btn btn-outline-primary">Filter</button>
+    </form>
+  </div>
+</div>
+
+
+<div class="input-group p-3 grid gap-3">
+  <select name="page_items" class="form-select" type="text">
+    <option selected="">- Select items per page -</option>
+    <option value="10">10 items</option>
+    <option value="20">20 items</option>
+    <option value="50">50 items</option>
+    <option value="100">100 items</option>
+    <option value="all">Show all items</option>
+  </select>
+
+  <input name="search" placeholder="search" type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+  
+</div>
+
+
+<div class="p-5 bg-body-secondary rounded-3 mb-3">
+  <div class="container-fluid">
+    <div class="table-responsive">
+      <table class="table caption-top">
+        
+        <caption>List of {{section}}s</caption>
+        
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Action</th>
+            {% if section == "Employee" %}
+              <th scope="col">First name</th>
+              <th scope="col">Last name</th>
+              <th scope="col">Phone number</th>
+              <th scope="col">Email address</th>
+              <th scope="col">Department</th>
+            {% endif %}
+
+            {% if section == "Department" %}
+              <th scope="col">Department</th>
+            {% endif %}
+            
+            
+            <th scope="col">Manager</th>
+            <th scope="col">Status</th>
+          </tr>
+        </thead>
+        
+        <tbody>
+          {% if section == "Employee" %}
+            {% include 'employee_list_loop.html' %}
+          {% endif %}
+
+          {% if section == "Department" %}
+            {% include 'department_list_loop.html' %}
+          {% endif %}
+        </tbody>
+        
+      </table>
+    </div>
+    
+  </div>
+</div>
+{% endblock %}

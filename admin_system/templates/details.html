@@ -1,0 +1,105 @@
+<!-- This page is inheriting everything from the base template -->
+{% extends "base.html" %}
+
+<!-- This block tag is overriding the title block tag from the base template -->
+{% block title %} {{operation}} {{section}} {% endblock %}
+
+
+<!-- This block tag is overriding the content block tag from the base template -->
+{% block content%}
+
+<div class="p-5 bg-body-secondary rounded-3">
+  <div class="container-fluid">
+    <h1> {{operation}} {{section}} </h1>
+    
+    <form method="POST">
+
+      {% if section == "Employee" %}
+        <div class="input-group mb-3">
+          <span class="input-group-text" id="inputGroup-sizing-default">Username</span>
+          <input name="username" placeholder="insert your username" type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+        </div>
+        
+        <div class="input-group mb-3">
+          <span class="input-group-text" id="inputGroup-sizing-default">Name</span>
+          <input name="first_name" placeholder="insert your first name" type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+        </div>
+  
+        <div class="input-group mb-3">
+          <span class="input-group-text" id="inputGroup-sizing-default">Last name</span>
+          <input name="last_name" placeholder="insert your last name" type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+        </div>
+      
+        <div class="input-group mb-3">
+          <span class="input-group-text" id="inputGroup-sizing-default">Email</span>
+          <input name="email" placeholder="insert your email" type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+        </div>
+      
+        <div class="input-group mb-3">
+          <span class="input-group-text" id="inputGroup-sizing-default">Phone</span>
+          <input name="phone_number" placeholder="insert your phone number" type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+        </div>
+
+      {% endif %}
+      
+
+      {% if user == "super_user" %}
+
+      <caption>Admin access</caption>
+      
+      {% if section == "Employee" %}
+        <div class="input-group mb-3">
+          <span class="input-group-text" id="inputGroup-sizing-default"> Title</span>
+          <select name="title" class="form-select" type="text">
+            <option selected="">- Select title -</option>
+            <option value="Manager">Manager</option>
+            <option value="Employee">Employee</option>
+          </select>
+        </div>
+      {% endif %}
+      
+      {% if operation == "Edit" %}
+        <div class="input-group mb-3">
+          <span class="input-group-text" id="inputGroup-sizing-default">Department</span>
+          <select name="department" class="form-select" type="text">
+            {% include 'department_loop.html' %}
+            <option selected="">- Select department -</option>
+          </select>
+        </div>
+      {% endif %}
+
+      {% if section == "Department" and operation == "Create" %}
+        <div class="input-group mb-3">
+          <span class="input-group-text" id="inputGroup-sizing-default">Department</span>
+          <input name="department" placeholder="insert department name" type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+        </div>
+      {% endif %}
+
+      <div class="input-group mb-3">
+        <span class="input-group-text" id="inputGroup-sizing-default">Manager</span>
+        <select name="manager" class="form-select" type="text">
+          {% include 'manager_loop.html' %}
+          <option selected="">- Select manager -</option>
+        </select>
+      </div>
+      
+      {% if operation == "Edit"%}
+        <div class="input-group mb-3">
+          <span class="input-group-text" id="inputGroup-sizing-default">Staus</span>
+          <select name="status" class="form-select" type="text">
+            <option selected="">- Select status -</option>
+            <option value="active">Active</option>
+            <option value="inactive">Inactive</option>
+          </select>
+        </div>
+      {% endif %}
+
+
+      {% endif %}
+      
+      <button type="save" class="btn btn-outline-primary">Save</button>
+      <button type="cancel" class="btn btn-outline-danger">Cancel</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

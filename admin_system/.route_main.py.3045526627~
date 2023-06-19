@@ -1,0 +1,241 @@
+'''
+This will include all the main routes used for the site
+'''
+# Blueprint is used to sort our routes
+# Render_template is used to render the html pages
+# Request is used to get POST data
+# Session is used to handle session database_name
+# Redirect is used to redirect pages
+# Url_for is used to get teh url for a route
+# Flash is used to flash success or error messages
+from flask import Blueprint, render_template, session, redirect, flash, url_for, request
+# Import connection variables
+from .connections import *
+# authentication functions
+from .db_auth import *
+
+views = Blueprint('views',__name__)
+
+
+# Create routes
+@views.route('/')
+def home():
+  '''
+  Create a route for the Home page
+  
+  Return:
+    home page
+  '''
+    
+  all_managers = collection_1.find({'manager_details.status': True,'admin.status': True})
+  all_departments = []
+  return render_template("home.html")
+
+
+@views.route('/employee_edit', methods=['POST', 'GET'])
+def employee_edit():
+  '''
+  Create a route for the employee edit page
+
+  Return:
+    employee edit page
+  '''
+  # check type of user
+  if "user" in session:
+    user = "user"
+  elif "super_user" in session:
+    user = "super_user"
+  else:
+    flash("You're not logged in", category='error')
+    return redirect(url_for('auth.login'))
+    
+  if request.method == 'POST':
+
+    if "user" in session:
+      request_username = request.form['username']
+
+      #employee details
+      request_first_name = request.form['first_name']
+      request_last_name = request.form['last_name']
+      request_email = request.form['email']
+      request_phone_number = request.form['phone_number']
+      
+    elif "super_user" in session:
+      request_username = request.form['username']
+
+      #employee details
+      request_first_name = request.form['first_name']
+      request_last_name = request.form['last_name']
+      request_email = request.form['email']
+      request_phone_number = request.form['phone_number']
+
+      # admin data
+      request_department = request.form['department']
+      request_manager = request.form['manager']
+      request_title = request.form['title']
+      request_status = request.form['status']
+
+    if not request_username:
+      flash('Please enter username for identification', category='error')
+    else:
+      user_exist = collection_1.find_one({"employee_login.username": request_username})
+      
+      if not user_exist:
+        flash('Invalid username', category='error')
+      else:
+
+        # fill in empty response with default data
+        if not request_first_name:
+          request_first_name = user_exist['employee_details']['first_name']
+        if not request_last_name:
+          request_last_name = user_exist['employee_details']['last_name']
+        if not request_email:
+          request_email = user_exist['employee_details']['email']
+        if not request_phone_number:
+          request_phone_number = user_exist['employee_details']['phone']
+          
+        update_user(request_username, request_first_name, request_last_name, request_email, request_phone_number)
+        
+        if "super_user" in session:
+          admin_update_user(request_username, request_title, request_department, request_manager, request_status)
+
+        flash("Successfully updated", category='success')
+  return render_template("details.html", operation = "Edit", section= "Employee",user=user)
+
+
+@views.route('/employee_list', methods=['POST', 'GET'])
+def employee_list():
+  '''
+  Create a route for the employee list page
+
+  Return:
+    employee list page
+  '''
+  # check type of user
+  if "user" in session:
+    user = "user"
+    
+    # check manager or employee
+    employee_data = collection_1.find_one({'email': session["user"] })
+    manager_role = employee_data['manager_details']['status']
+
+    if manager_role == False:
+      flash("Login as authorized user to access page", category='error')
+      return redirect(url_for('auth.login'))
+    else:
+      manager_first_name = employee_data['employee_details']['first_name']
+      manager_last_name = employee_data['employee_details']['last_name']
+      
+  elif "super_user" in session:
+    user = "super_user"
+  else:
+    flash("You're not logged in", category='error')
+    return redirect(url_for('auth.login'))
+
+  #data = collection_1.find({'employee_details.current_department': None , 'admin.status': False })
+  #data_list = list(data)
+  data_list = []
+  
+        
+  if request.method == 'POST':
+    if user == "user":
+      
+      request_department = request.form['department']
+      request_status = request.form['status']
+  
+      if request_department == "- Select department -":
+        flash("Select department", category='error')
+      else:
+        data_list = employee_list_data(request_department, request_status)
+        return render_template("list.html", section= "Employee", user=user, data_list=data_list, list_length=len(data_list))
+        
+      
+    
+    if user == "super_user":
+      request_manager = request.form['manager']
+      request_department = request.form['department']
+      request_status = request.form['status']
+  
+      if request_department == "- Select department -":
+        flash("Select department", category='error')
+      elif request_status == "- Select status -":
+        request_status = "active"
+      elif request_manager == "- Select manager -":
+        flash("Select manager", category='error')
+      else:
+        data_list = admin_employee_list_data(request_department, request_status, request_manager)
+        return render_template("list.html", section= "Employee", user=user, data_list=data_list, list_length=len(data_list))
+
+    pass
+
+  return render_template("list.html", section= "Employee", user=user, data_list=data_list, list_length=len(data_list))
+  
+
+
+@views.route('/department_edit', methods=['POST', 'GET'])
+def department_edit():
+  '''
+  Create a route for the department edit page
+
+  Return:
+    department edit page
+  '''
+  # check type of user
+  if "user" in session:
+    user = "user"
+    flash("Access denied", category='error')
+    return redirect(url_for('views.home'))
+  elif "super_user" in session:
+    user = "super_user"
+  else:
+    flash("You're not logged in", category='error')
+    return redirect(url_for('auth.login'))
+  
+  if request.method == 'POST':
+    # request form data
+    request_department = request.form['department']
+    request_manager = request.form['manager']
+    request_status = request.form['status']
+
+    department_exist = collection_2.find_one({"department_name": request_department})
+    
+    if department_exist:
+      update_department(request_department, request_manager, request_status)
+      flash("Department updated", category='success')
+    else: 
+      flash("Department does not exist", category='error')
+      
+  return render_template("details.html", operation = "Edit", section= "Department", user=user)
+
+
+@views.route('/department_list', methods=['POST', 'GET'])
+def department_list():
+  '''
+  Create a route for the department list page
+
+  Return:
+    department list page
+  '''
+  # check type of user
+  data_list = list(collection_2.find())
+  
+  if "super_user" not in session:
+    flash("Access denied!", category='error')
+    return redirect(url_for('auth.login'))
+
+  if request.method == 'POST':
+    request_status = request.form['status']
+    
+    if request_status == "- Select status -":
+      request_status = True
+    elif request_status == "active":
+      request_status = True
+    elif request_status == "inactive":
+      request_status = False
+    
+    data_list = list(collection_2.find({'status': request_status}))
+    
+    return render_template("list.html", section= "Department", user="super_user", data_list=data_list, list_length=len(data_list))
+
+  return render_template("list.html", section= "Department", user="super_user", data_list=data_list, list_length=len(data_list))
+    

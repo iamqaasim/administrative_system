@@ -1,0 +1,6 @@
+Flask
+gunicorn
+Mongo
+bcrypt
+validate_email
+py3dns

@@ -1,0 +1,8 @@
+{% for manager in all_managers %}
+
+  <option 
+    selected="{{ manager['employee_details']['first_name'] }} {{ manager['employee_details']['last_name'] }}">
+    {{ manager['employee_details']['first_name'] }} {{ manager['employee_details']['last_name'] }}
+  </option>
+
+{% endfor %}

@@ -1,0 +1,15 @@
+{% for i in range(0, list_length) %}
+  <tr>
+    <th scope="row">{{i+1}}</th>
+    <td> 
+      <a href="{{url_for('views.employee_edit')}}">edit</a>
+    </td>
+    <td>{{data_list[i]['employee_details']['first_name']}}</td>
+    <td>{{data_list[i]['employee_details']['last_name']}}</td>
+    <td>{{data_list[i]['employee_details']['phone']}}</td>
+    <td>{{data_list[i]['employee_details']['email']}}</td>
+    <td>{{data_list[i]['employee_details']['current_department']}}</td>
+    <td>{{data_list[i]['employee_details']['current_manager'] }}</td>
+    <td>{{data_list[i]['admin']['status']}}</td>
+  </tr>
+{% endfor %}

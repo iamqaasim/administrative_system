@@ -1,0 +1,36 @@
+<!-- This page is inheriting everything from the base template -->
+{% extends "base.html" %}
+
+<!-- This block tag is overriding the title block tag from the base template -->
+{% block title %} Login {% endblock %}
+
+
+<!-- This block tag is overriding the content block tag from the base template -->
+{% block content%}
+
+<div class="p-5 bg-body-secondary rounded-3">
+  <div class="container-fluid">
+    <h1> Login </h1>
+    
+    <p>Access your account</p>
+    
+    <form method="POST">
+      
+      <div class="input-group mb-3">
+        <span class="input-group-text" id="inputGroup-sizing-default">Username</span>
+        <input name="username" placeholder="insert username" type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+      </div>
+    
+      <div class="input-group mb-3">
+        <span class="input-group-text" id="inputGroup-sizing-default">Password</span>
+        <input name="password" placeholder="insert password" type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+      </div>
+    
+      <p>Don't have an account ? <a href="{{url_for('auth.employee_create')}}">Sign Up</a></p>
+      
+      <button name="submit" type="submit" class="btn btn-outline-primary">Submit</button>
+    </form>
+  </div>
+</div>
+
+{% endblock %}
